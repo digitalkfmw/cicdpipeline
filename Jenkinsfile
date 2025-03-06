@@ -26,10 +26,20 @@ pipeline {
             }
         }
 
+        stage('Undeploy from Tomcat') {
+            steps {
+                script {
+                    bat '''
+                    curl -v -u %TOMCAT_USER%:%TOMCAT_PASS% "%TOMCAT_URL%/undeploy?path=/cicd-webapp" || exit 0
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to Tomcat') {
             steps {
                 bat '''
-                curl -v -u %TOMCAT_USER%:%TOMCAT_PASS% -T target/cicd-webapp.war %TOMCAT_URL%/deploy?path=/cicd-webapp
+                curl -v -u %TOMCAT_USER%:%TOMCAT_PASS% -T target/cicd-webapp.war "%TOMCAT_URL%/deploy?path=/cicd-webapp"
                 '''
             }
         }
@@ -37,10 +47,10 @@ pipeline {
 
     post {
         success {
-            echo 'CI/CD Pipeline Successful! Check your app at http://localhost:9090/cicd-webapp'
+            echo '✅ CI/CD Pipeline Successful! Check your app at http://localhost:9090/cicd-webapp'
         }
         failure {
-            echo 'Build, Test, or Deployment Failed!'
+            echo '❌ Build, Test, or Deployment Failed!'
         }
     }
 }

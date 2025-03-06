@@ -1,5 +1,5 @@
 <html>
   <body>
-    <h2>CI/CD Testing!</h2>
+    <h2>CI/CD!</h2>
   </body>
 </html>
